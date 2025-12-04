@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagora | The Future of Cross-Border Money</title>
+    <meta name="description" content="Instant transfers, virtual cards, and seamless money management for the US, Mexico, and Caribbean.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0F172A',
+                            blue: '#2563EB',
+                            light: '#EFF6FF',
+                            accent: '#38BDF8',
+                            dark: '#020617',
+                            surface: '#F8FAFC',
+                            success: '#10B981',
+                            danger: '#EF4444'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles */
+        body { font-family: 'Inter', sans-serif; }
+        
+        .hero-gradient {
+            background: radial-gradient(circle at top right, #1e40af 0%, #0f172a 40%, #020617 100%);
+        }
+
+        /* Nav Button Active State */
+        .nav-btn.active {
+            color: #2563EB;
+            font-weight: 600;
+        }
+
+        /* Dashboard Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Product List */
+        .product-list li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: start;
+            gap: 0.5rem;
+            font-size: 0.875rem; 
+            color: #475569; 
+        }
+        .product-list li i {
+            margin-top: 0.25rem;
+            font-size: 0.6rem;
+            color: #2563EB; 
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-600 antialiased overflow-x-hidden flex flex-col min-h-screen">
+
+    <!-- SPA Navigation -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all duration-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer" onclick="router.navigate('home')">
+                    <div class="w-9 h-9 bg-brand-blue rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-lg shadow-blue-500/30">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <span class="font-heading font-bold text-2xl text-brand-navy tracking-tight">Pagora</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex space-x-8 items-center">
+                    <!-- Public Links -->
+                    <button onclick="router.navigate('home')" class="nav-btn transition" id="nav-home">Home</button>
+                    <button onclick="router.navigate('products')" class="nav-btn transition" id="nav-products">Products</button>
+                    <button onclick="router.navigate('about')" class="nav-btn transition" id="nav-about">About</button>
+                    
+                    <!-- Auth State: Guest -->
+                    <div id="nav-auth-guest" class="flex items-center gap-4">
+                        <button onclick="router.navigate('login')" class="nav-btn transition font-medium" id="nav-login">Login</button>
+                        <button onclick="router.navigate('signup')" class="px-5 py-2.5 bg-brand-blue hover:bg-blue-700 text-white rounded-full font-bold transition shadow-lg shadow-blue-200 transform hover:scale-105">
+                            Create Account
+                        </button>
+                    </div>
+
+                    <!-- Auth State: Logged In -->
+                    <div id="nav-auth-user" class="hidden flex items-center gap-4">
+                        <button onclick="router.navigate('dashboard')" class="nav-btn transition font-bold text-brand-blue" id="nav-dashboard">Dashboard</button>
+                        <button onclick="router.navigate('profile')" class="nav-btn transition font-medium" id="nav-profile">Profile</button>
+                        <div class="h-6 w-px bg-slate-300"></div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-brand-navy text-white flex items-center justify-center text-xs font-bold cursor-pointer" onclick="router.navigate('profile')" id="user-avatar">
+                                <!-- Initials -->
+                            </div>
+                            <button onclick="authService.logout()" class="text-sm font-medium text-slate-500 hover:text-red-500 transition">Logout</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="lg:hidden text-slate-600 hover:text-brand-blue text-2xl" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-slate-100 p-4 absolute w-full shadow-xl z-40 top-20">
+            <div class="flex flex-col space-y-3">
+                <button onclick="router.navigate('home'); toggleMobileMenu()" class="text-left py-2 font-medium">Home</button>
+                <button onclick="router.navigate('products'); toggleMobileMenu()" class="text-left py-2 font-medium">Products</button>
+                
+                <!-- Guest Mobile -->
+                <div id="mobile-auth-guest" class="flex flex-col gap-2 pt-2 border-t border-slate-100">
+                    <button onclick="router.navigate('login'); toggleMobileMenu()" class="text-left py-2 font-medium">Login</button>
+                    <button onclick="router.navigate('signup'); toggleMobileMenu()" class="w-full py-3 bg-brand-blue text-white rounded-lg font-bold">Create Account</button>
+                </div>
+
+                <!-- User Mobile -->
+                <div id="mobile-auth-user" class="hidden flex flex-col gap-2 pt-2 border-t border-slate-100">
+                    <button onclick="router.navigate('dashboard'); toggleMobileMenu()" class="text-left py-2 font-bold text-brand-blue">Go to Dashboard</button>
+                    <button onclick="router.navigate('profile'); toggleMobileMenu()" class="text-left py-2 font-medium">Profile & Settings</button>
+                    <button onclick="authService.logout(); toggleMobileMenu()" class="text-left py-2 text-red-500 font-medium">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main id="main-container" class="pt-20 flex-grow relative">
+        
+        <!-- TOAST NOTIFICATION -->
+        <div id="toast" class="fixed top-24 right-4 z-[100] transform translate-x-full transition-transform duration-300 bg-white border-l-4 border-brand-success shadow-xl rounded-lg p-4 flex items-center gap-3 min-w-[300px]">
+            <div class="text-brand-success text-xl"><i class="fas fa-check-circle"></i></div>
+            <div>
+                <h4 class="font-bold text-sm text-brand-navy" id="toast-title">Success</h4>
+                <p class="text-xs text-slate-500" id="toast-message">Operation successful</p>
+            </div>
+        </div>
+
+        <!-- VIEW: HOME -->
+        <div id="view-home" class="page-view animate-fade-in">
+            <section class="hero-gradient min-h-[90vh] flex items-center relative overflow-hidden text-white">
+                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-20"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 grid lg:grid-cols-2 gap-12 items-center py-12">
+                    <div class="text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-blue-200 text-sm font-semibold mb-8 backdrop-blur-sm">
+                            <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+                            Live in US, Mexico & Caribbean
+                        </div>
+                        <h1 class="font-heading text-4xl sm:text-6xl font-extrabold mb-6 leading-tight">
+                            Money Without <br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-blue-400">Borders.</span>
+                        </h1>
+                        <p class="text-lg text-slate-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                            Send cash instantly, spend with a virtual card, and manage multi-currency wallets. The financial super-app for the diaspora.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <button onclick="router.navigate('signup')" class="px-8 py-4 bg-brand-blue hover:bg-blue-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-blue-500/20 transition transform hover:-translate-y-1">
+                                Join / Create Account
+                            </button>
+                            <button onclick="router.navigate('products')" class="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-lg backdrop-blur-md transition flex items-center justify-center gap-2">
+                                Explore Products
+                            </button>
+                        </div>
+                    </div>
+                    <div class="relative hidden lg:block animate-float">
+                        <img src="https://placehold.co/400x800/0f172a/FFF?text=Pagora+App" class="relative mx-auto w-[320px] rounded-[3rem] border-8 border-slate-800 shadow-2xl transform rotate-[-6deg] hover:rotate-0 transition duration-500">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW: LOGIN -->
+        <div id="view-login" class="page-view hidden animate-fade-in">
+            <div class="min-h-[80vh] flex items-center justify-center py-12 px-4 bg-slate-50">
+                <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+                    <div class="text-center mb-8">
+                        <div class="w-12 h-12 bg-brand-blue rounded-lg flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-brand-navy">Welcome Back</h2>
+                        <p class="text-slate-500 text-sm mt-2">Log in to manage your finances.</p>
+                    </div>
+                    
+                    <form onsubmit="authService.handleLogin(event)" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
+                            <input type="email" name="email" required class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none transition" placeholder="you@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                            <input type="password" name="password" required class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none transition" placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-slate-800 text-white font-bold rounded-xl transition shadow-lg">
+                            Log In
+                        </button>
+                    </form>
+                    <div class="mt-6 text-center text-sm">
+                        <span class="text-slate-500">New to Pagora?</span>
+                        <button onclick="router.navigate('signup')" class="text-brand-blue font-bold hover:underline">Create an account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: SIGNUP -->
+        <div id="view-signup" class="page-view hidden animate-fade-in">
+            <div class="min-h-[80vh] flex items-center justify-center py-12 px-4 bg-slate-50">
+                <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+                    <div class="text-center mb-8">
+                        <div class="w-12 h-12 bg-brand-success rounded-lg flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-brand-navy">Create Account</h2>
+                        <p class="text-slate-500 text-sm mt-2">Join the future of banking today.</p>
+                    </div>
+                    
+                    <form onsubmit="authService.handleSignup(event)" class="space-y-5">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">First Name</label>
+                                <input type="text" name="firstName" required class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Last Name</label>
+                                <input type="text" name="lastName" required class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
+                            <input type="email" name="email" required class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Password</label>
+                            <input type="password" name="password" required minlength="6" class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Country</label>
+                            <select name="country" class="w-full p-3 border border-slate-200 rounded-xl outline-none bg-white">
+                                <option value="US">United States</option>
+                                <option value="MX">Mexico</option>
+                                <option value="JM">Jamaica</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-brand-blue hover:bg-blue-600 text-white font-bold rounded-xl transition shadow-lg">
+                            Create Account
+                        </button>
+                    </form>
+                    <div class="mt-6 text-center text-sm">
+                        <span class="text-slate-500">Already have an account?</span>
+                        <button onclick="router.navigate('login')" class="text-brand-blue font-bold hover:underline">Log in</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: DASHBOARD (Logged In) -->
+        <div id="view-dashboard" class="page-view hidden animate-fade-in bg-slate-50 min-h-screen pb-20">
+            <!-- Header -->
+            <div class="bg-brand-navy pt-8 pb-32 px-4 rounded-b-[3rem]">
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex justify-between items-center text-white mb-8">
+                        <div>
+                            <p class="text-blue-200 text-sm font-medium">Welcome back,</p>
+                            <h2 class="text-2xl font-bold" id="dash-username">User</h2>
+                        </div>
+                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/20 transition" onclick="router.navigate('profile')">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Balance Card -->
+                    <div class="glass-card p-6 rounded-2xl shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-20"><i class="fas fa-wallet text-6xl text-brand-navy"></i></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Balance</span>
+                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Active</span>
+                            </div>
+                            <div class="text-4xl font-bold text-brand-navy mb-1" id="dash-balance">$0.00</div>
+                            <div class="text-slate-400 text-sm font-mono" id="dash-account-num">Acct: ...</div>
+                        </div>
+                        
+                        <div class="mt-8 grid grid-cols-2 gap-4">
+                            <button onclick="bankService.showTransferModal()" class="flex items-center justify-center gap-2 bg-brand-blue text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition shadow-lg shadow-blue-200">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                            <button onclick="bankService.showTopUpModal()" class="flex items-center justify-center gap-2 bg-white border border-slate-200 text-brand-navy py-3 rounded-xl font-bold hover:bg-slate-50 transition">
+                                <i class="fas fa-plus"></i> Top Up
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="max-w-5xl mx-auto px-4 -mt-16 relative z-20">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Quick Stats -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">Cards</p>
+                            <p class="font-bold text-brand-navy">1 Active</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xl">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">Monthly Limit</p>
+                            <p class="font-bold text-brand-navy">$5,000 Left</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Transactions -->
+                    <div class="md:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                            <h3 class="font-bold text-lg text-brand-navy">Recent Transactions</h3>
+                            <button class="text-sm text-brand-blue font-bold hover:underline">View All</button>
+                        </div>
+                        <div id="dash-transactions" class="divide-y divide-slate-50">
+                            <!-- Transactions injected by JS -->
+                            <div class="p-8 text-center text-slate-400 text-sm">No transactions yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: PROFILE & SETTINGS -->
+        <div id="view-profile" class="page-view hidden animate-fade-in bg-slate-50 min-h-screen pb-20">
+            <div class="bg-brand-navy pt-8 pb-20 px-4 rounded-b-[2rem] mb-8">
+                <div class="max-w-3xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white mb-2">Profile & Settings</h2>
+                    <p class="text-blue-200">Manage your account details and security.</p>
+                </div>
+            </div>
+            
+            <div class="max-w-3xl mx-auto px-4 -mt-16">
+                <!-- Personal Info -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="font-bold text-lg text-brand-navy">Personal Information</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label>
+                            <div class="text-slate-800 font-medium" id="prof-name">Loading...</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email Address</label>
+                            <div class="text-slate-800 font-medium" id="prof-email">Loading...</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Pagora Account ID</label>
+                            <div class="font-mono text-slate-600 bg-slate-100 inline-block px-3 py-1 rounded" id="prof-id">...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Limits -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="font-bold text-lg text-brand-navy">Account Limits</h3>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-600">Daily Transfer Limit</span>
+                                <span class="font-bold text-brand-navy">$2,000.00</span>
+                            </div>
+                            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-brand-blue w-1/4 rounded-full"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-600">Monthly Top-up Limit</span>
+                                <span class="font-bold text-brand-navy">$10,000.00</span>
+                            </div>
+                            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-green-500 w-1/2 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="font-bold text-lg text-brand-navy">Security</h3>
+                    </div>
+                    <div class="p-6">
+                        <form onsubmit="authService.changePassword(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">New Password</label>
+                                <input type="password" required minlength="6" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none" placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="bg-brand-navy text-white px-6 py-2.5 rounded-lg font-bold hover:bg-slate-800 transition">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: PRODUCTS (from previous update) -->
+        <div id="view-products" class="page-view hidden animate-fade-in">
+             <section class="py-20 bg-slate-50">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="text-center mb-16">
+                        <span class="text-brand-blue font-bold tracking-wider text-sm uppercase">Our Ecosystem</span>
+                        <h2 class="font-heading text-4xl font-bold text-brand-navy mt-2">Comprehensive Financial Tools</h2>
+                        <p class="text-slate-500 mt-2">Everything you need, all in one place.</p>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-brand-blue text-xl mb-4"><i class="fas fa-user"></i></div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-4">Personal Account</h3>
+                            <ul class="product-list">
+                                <li><i class="fas fa-circle"></i> Create Account & KYC</li>
+                                <li><i class="fas fa-circle"></i> Manage Digital Wallet</li>
+                                <li><i class="fas fa-circle"></i> Diaspora Account Linking</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                            <div class="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center text-white text-xl mb-4"><i class="fas fa-briefcase"></i></div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-4">Business Account</h3>
+                            <ul class="product-list">
+                                <li><i class="fas fa-circle"></i> Verify Business (KYB)</li>
+                                <li><i class="fas fa-circle"></i> Accept & Send Payments</li>
+                                <li><i class="fas fa-circle"></i> Generate Reports & Invoices</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 text-xl mb-4"><i class="fas fa-wallet"></i></div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-4">Digital Wallet</h3>
+                            <ul class="product-list">
+                                <li><i class="fas fa-circle"></i> Multi-Currency Support</li>
+                                <li><i class="fas fa-circle"></i> Wallet-to-Wallet Transfers</li>
+                                <li><i class="fas fa-circle"></i> Withdraw to Bank / Mobile Money</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW: APP DEMO (Refined) -->
+        <div id="view-app-demo" class="page-view hidden bg-slate-900 min-h-[90vh]">
+            <div class="max-w-7xl mx-auto px-4 py-12 flex flex-col lg:flex-row items-center justify-center gap-16">
+                <!-- Demo Controls -->
+                <div class="text-white lg:w-1/3">
+                    <span class="text-brand-accent font-bold tracking-wider text-xs uppercase mb-2 block">Interactive Prototype</span>
+                    <h2 class="font-heading text-3xl font-bold mb-6">Experience Pagora Live</h2>
+                    <p class="text-slate-400 mb-8">Click through the phone simulator to test our user experience.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition" onclick="setAppScreen('dashboard')">
+                            <h4 class="font-bold flex items-center gap-2"><i class="fas fa-home text-brand-accent"></i> Dashboard</h4>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition" onclick="setAppScreen('send')">
+                            <h4 class="font-bold flex items-center gap-2"><i class="fas fa-paper-plane text-green-400"></i> Send Money</h4>
+                        </div>
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition" onclick="setAppScreen('cards')">
+                            <h4 class="font-bold flex items-center gap-2"><i class="fas fa-credit-card text-purple-400"></i> Virtual Cards</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phone Simulator -->
+                <div class="phone-frame w-[320px] h-[650px] bg-slate-50 relative">
+                    <div class="phone-notch"></div>
+                    
+                    <!-- Screen: Welcome -->
+                    <div id="app-welcome" class="app-screen active flex flex-col justify-end p-8 h-full bg-brand-navy text-white pb-16">
+                        <div class="mb-auto mt-20 text-center">
+                            <div class="w-16 h-16 bg-brand-blue rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                                <i class="fas fa-paper-plane"></i>
+                            </div>
+                            <h2 class="font-heading text-2xl font-bold">Pagora</h2>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Money without borders</h3>
+                        <p class="text-slate-400 text-sm mb-8">Send, spend, and save across the Americas.</p>
+                        <button onclick="setAppScreen('dashboard')" class="w-full py-3 bg-brand-blue rounded-xl font-bold mb-3">Log In</button>
+                    </div>
+
+                    <!-- Screen: Dashboard (Updated to match main Dashboard) -->
+                    <div id="app-dashboard" class="app-screen flex-col bg-slate-50 h-full relative">
+                        <div class="bg-brand-navy p-6 pt-12 pb-8 rounded-b-3xl">
+                            <div class="flex justify-between items-center text-white mb-6">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-slate-600"></div>
+                                    <span class="font-bold text-sm">Hi, Alex</span>
+                                </div>
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <!-- Glass Card Effect for Phone -->
+                            <div class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl relative">
+                                <div class="text-slate-300 text-[10px] uppercase font-bold">Total Balance</div>
+                                <div class="text-2xl font-bold text-white mt-1">$1,240.50</div>
+                                <div class="text-[10px] text-slate-400 font-mono mt-1">Acct: ...4289</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-around -mt-6 px-4 mb-6 relative z-10">
+                            <button onclick="setAppScreen('send')" class="flex flex-col items-center gap-1">
+                                <div class="w-12 h-12 bg-brand-blue rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white"><i class="fas fa-paper-plane"></i></div>
+                                <span class="text-xs font-bold text-slate-600">Send</span>
+                            </button>
+                            <button class="flex flex-col items-center gap-1">
+                                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-navy shadow-lg border-2 border-white"><i class="fas fa-plus"></i></div>
+                                <span class="text-xs font-bold text-slate-600">Top Up</span>
+                            </button>
+                        </div>
+                        <div class="p-6 overflow-y-auto flex-1 pb-24">
+                            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-4 text-white mb-6 cursor-pointer" onclick="setAppScreen('cards')">
+                                <div class="flex justify-between items-start mb-6">
+                                    <span class="text-xs font-mono opacity-80">VIRTUAL</span>
+                                    <i class="fab fa-cc-visa text-2xl"></i>
+                                </div>
+                                <div class="text-sm opacity-80 mb-1">Pagora Debit</div>
+                                <div class="font-mono text-lg">•••• 4289</div>
+                            </div>
+                            <h4 class="font-bold text-slate-800 mb-4 text-sm">Recent Transactions</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl">🌮</div>
+                                        <div>
+                                            <div class="font-bold text-sm text-slate-800">Tacos</div>
+                                            <div class="text-xs text-slate-500">Food</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm font-bold text-slate-800">-$12.50</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-0 w-full bg-white border-t border-slate-100 p-4 flex justify-between items-center text-slate-400">
+                            <button onclick="setAppScreen('dashboard')" class="text-brand-blue flex flex-col items-center"><i class="fas fa-home text-lg"></i></button>
+                            <button onclick="setAppScreen('cards')" class="hover:text-brand-blue flex flex-col items-center"><i class="fas fa-credit-card text-lg"></i></button>
+                            <button class="hover:text-brand-blue flex flex-col items-center"><i class="fas fa-user text-lg"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Screen: Send -->
+                    <div id="app-send" class="app-screen flex-col bg-slate-50 h-full">
+                        <div class="bg-white p-4 pt-12 flex items-center gap-4 border-b border-slate-100">
+                            <button onclick="setAppScreen('dashboard')" class="text-slate-800"><i class="fas fa-arrow-left"></i></button>
+                            <span class="font-bold text-slate-800">Send Money</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center mb-6">
+                                <div class="text-xs text-slate-400 font-bold uppercase mb-2">Amount</div>
+                                <div class="text-4xl font-bold text-slate-800 mb-1">$50.00</div>
+                            </div>
+                            <button onclick="setAppScreen('dashboard')" class="w-full py-4 bg-brand-blue text-white font-bold rounded-xl shadow-lg shadow-blue-200">Send Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen: Cards -->
+                    <div id="app-cards" class="app-screen flex-col bg-slate-50 h-full">
+                        <div class="bg-white p-4 pt-12 flex items-center gap-4 border-b border-slate-100">
+                            <button onclick="setAppScreen('dashboard')" class="text-slate-800"><i class="fas fa-arrow-left"></i></button>
+                            <span class="font-bold text-slate-800">My Cards</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="bg-slate-800 rounded-2xl p-6 text-white shadow-xl mb-8">
+                                <div class="flex justify-between items-start mb-8">
+                                    <i class="fas fa-wifi opacity-70"></i>
+                                    <i class="fab fa-cc-visa text-3xl"></i>
+                                </div>
+                                <div class="font-mono text-xl tracking-widest mb-6">•••• 4289</div>
+                                <div class="flex justify-between text-sm font-bold">
+                                    <span>ALEX DOE</span>
+                                    <span>12/28</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: ABOUT (Placeholder) -->
+        <div id="view-about" class="page-view hidden animate-fade-in">
+            <div class="py-20 text-center"><h1 class="text-2xl font-bold">About Pagora</h1><p>Mission & Vision content here.</p></div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <span class="font-bold text-white text-xl block mb-2">Pagora LLC</span>
+                <p class="text-sm">Sheridan, Wyoming, USA</p>
+            </div>
+            <div class="text-sm">© 2025 Pagora. Financial Simulation Prototype.</div>
+        </div>
+    </footer>
+
+    <!-- MODAL: SEND MONEY -->
+    <div id="transfer-modal" class="fixed inset-0 z-[60] hidden bg-brand-navy/80 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-fade-in">
+            <h3 class="text-xl font-bold text-brand-navy mb-4">Send Money</h3>
+            <form onsubmit="bankService.processTransfer(event)">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Recipient (Email)</label>
+                    <input type="email" name="recipient" required class="w-full p-3 border border-slate-200 rounded-xl outline-none" placeholder="friend@pagora.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Amount ($)</label>
+                    <input type="number" name="amount" min="1" step="0.01" required class="w-full p-3 border border-slate-200 rounded-xl outline-none font-bold text-lg" placeholder="0.00">
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="document.getElementById('transfer-modal').classList.remove('flex'); document.getElementById('transfer-modal').classList.add('hidden');" class="flex-1 py-3 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 bg-brand-blue text-white font-bold rounded-xl hover:bg-blue-600">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: TOP UP -->
+    <div id="topup-modal" class="fixed inset-0 z-[60] hidden bg-brand-navy/80 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-fade-in">
+            <h3 class="text-xl font-bold text-brand-navy mb-4">Add Funds</h3>
+            <form onsubmit="bankService.processTopUp(event)">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Payment Method</label>
+                    <select class="w-full p-3 border border-slate-200 rounded-xl outline-none bg-white">
+                        <option>Bank Account (**** 1234)</option>
+                        <option>Debit Card (**** 5678)</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Amount ($)</label>
+                    <input type="number" name="amount" min="10" step="1" required class="w-full p-3 border border-slate-200 rounded-xl outline-none font-bold text-lg" placeholder="50.00">
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="document.getElementById('topup-modal').classList.remove('flex'); document.getElementById('topup-modal').classList.add('hidden');" class="flex-1 py-3 bg-slate-100 font-bold rounded-xl hover:bg-slate-200">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 bg-brand-navy text-white font-bold rounded-xl hover:bg-slate-800">Add Money</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT: LOGIC & BACKEND SIMULATION -->
+    <script>
+        // --- 1. ROUTER & NAVIGATION ---
+        const router = {
+            currentPage: 'home',
+            navigate: function(pageId) {
+                this.currentPage = pageId;
+                
+                // Toggle Views
+                document.querySelectorAll('.page-view').forEach(el => el.classList.add('hidden'));
+                const target = document.getElementById(`view-${pageId}`);
+                if(target) target.classList.remove('hidden');
+                
+                // Scroll top
+                window.scrollTo(0,0);
+
+                // Update Auth Nav Visibility
+                authService.updateNav();
+
+                // Load specific data
+                if(pageId === 'dashboard') bankService.loadDashboard();
+                if(pageId === 'profile') authService.loadProfile();
+            }
+        };
+
+        // --- 2. AUTH SERVICE (Simulated User Management) ---
+        const authService = {
+            currentUser: null,
+
+            init: function() {
+                // Check if user is logged in from localStorage
+                const savedUser = localStorage.getItem('pagora_current_user');
+                if (savedUser) {
+                    this.currentUser = JSON.parse(savedUser);
+                }
+                this.updateNav();
+            },
+
+            updateNav: function() {
+                const guestNav = document.getElementById('nav-auth-guest');
+                const userNav = document.getElementById('nav-auth-user');
+                const mobileGuest = document.getElementById('mobile-auth-guest');
+                const mobileUser = document.getElementById('mobile-auth-user');
+                
+                if (this.currentUser) {
+                    guestNav.classList.add('hidden');
+                    userNav.classList.remove('hidden');
+                    if(mobileGuest) mobileGuest.classList.add('hidden');
+                    if(mobileUser) mobileUser.classList.remove('hidden');
+                    
+                    // Update Avatar
+                    const initials = this.currentUser.firstName[0] + this.currentUser.lastName[0];
+                    document.getElementById('user-avatar').textContent = initials;
+                } else {
+                    guestNav.classList.remove('hidden');
+                    userNav.classList.add('hidden');
+                    if(mobileGuest) mobileGuest.classList.remove('hidden');
+                    if(mobileUser) mobileUser.classList.add('hidden');
+                }
+            },
+
+            handleSignup: function(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const user = Object.fromEntries(formData.entries());
+                
+                // Basic Validation
+                const existingUsers = JSON.parse(localStorage.getItem('pagora_users') || '[]');
+                if(existingUsers.find(u => u.email === user.email)) {
+                    ui.toast('Error', 'Email already registered', 'error');
+                    return;
+                }
+
+                // Add default fields (Simulation)
+                user.id = Date.now().toString();
+                user.balance = 1000.00; // Sign up bonus simulation
+                user.accountNumber = 'PAG-' + Math.floor(10000000 + Math.random() * 90000000);
+                user.transactions = [
+                    { id: 1, type: 'credit', desc: 'Welcome Bonus', amount: 1000.00, date: new Date().toLocaleDateString() }
+                ];
+
+                // Save
+                existingUsers.push(user);
+                localStorage.setItem('pagora_users', JSON.stringify(existingUsers));
+                
+                // Auto Login
+                this.loginUser(user);
+                ui.toast('Success', 'Account created! Welcome bonus added.', 'success');
+            },
+
+            handleLogin: function(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const creds = Object.fromEntries(formData.entries());
+
+                const users = JSON.parse(localStorage.getItem('pagora_users') || '[]');
+                const user = users.find(u => u.email === creds.email && u.password === creds.password);
+
+                if(user) {
+                    this.loginUser(user);
+                    ui.toast('Success', 'Welcome back!', 'success');
+                } else {
+                    ui.toast('Error', 'Invalid credentials', 'error');
+                }
+            },
+
+            loginUser: function(user) {
+                this.currentUser = user;
+                localStorage.setItem('pagora_current_user', JSON.stringify(user));
+                this.updateNav();
+                router.navigate('dashboard');
+            },
+
+            logout: function() {
+                this.currentUser = null;
+                localStorage.removeItem('pagora_current_user');
+                this.updateNav();
+                router.navigate('home');
+                ui.toast('Info', 'Logged out successfully', 'success');
+            },
+
+            loadProfile: function() {
+                if(!this.currentUser) return;
+                document.getElementById('prof-name').textContent = this.currentUser.firstName + ' ' + this.currentUser.lastName;
+                document.getElementById('prof-email').textContent = this.currentUser.email;
+                document.getElementById('prof-id').textContent = this.currentUser.accountNumber;
+            },
+
+            changePassword: function(e) {
+                e.preventDefault();
+                // Simulation only
+                ui.toast('Success', 'Password updated successfully!', 'success');
+                e.target.reset();
+            }
+        };
+
+        // --- 3. BANK SERVICE (Simulated Financials) ---
+        const bankService = {
+            loadDashboard: function() {
+                const user = authService.currentUser;
+                if(!user) return;
+
+                // Refresh data from storage (in case updated elsewhere)
+                const users = JSON.parse(localStorage.getItem('pagora_users') || '[]');
+                const freshUser = users.find(u => u.id === user.id);
+                if(freshUser) authService.currentUser = freshUser;
+
+                // Update DOM
+                document.getElementById('dash-username').textContent = user.firstName + ' ' + user.lastName;
+                document.getElementById('dash-balance').textContent = '$' + parseFloat(user.balance).toLocaleString('en-US', {minimumFractionDigits: 2});
+                document.getElementById('dash-account-num').textContent = user.accountNumber;
+
+                // Render Transactions
+                const txList = document.getElementById('dash-transactions');
+                txList.innerHTML = '';
+                
+                const sortedTx = [...user.transactions].reverse(); // Newest first
+
+                if(sortedTx.length === 0) {
+                     txList.innerHTML = '<div class="p-8 text-center text-slate-400 text-sm">No transactions yet.</div>';
+                } else {
+                    sortedTx.forEach(tx => {
+                        const isCredit = tx.type === 'credit';
+                        const color = isCredit ? 'text-green-600' : 'text-slate-800';
+                        const sign = isCredit ? '+' : '-';
+                        const icon = isCredit ? 'fa-arrow-down' : 'fa-paper-plane';
+                        const bg = isCredit ? 'bg-green-100 text-green-600' : 'bg-blue-50 text-brand-blue';
+
+                        const html = `
+                            <div class="p-6 flex justify-between items-center hover:bg-slate-50 transition">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full ${bg} flex items-center justify-center">
+                                        <i class="fas ${icon}"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-brand-navy text-sm">${tx.desc}</p>
+                                        <p class="text-xs text-slate-500">${tx.date}</p>
+                                    </div>
+                                </div>
+                                <div class="font-bold ${color}">${sign}$${tx.amount.toFixed(2)}</div>
+                            </div>
+                        `;
+                        txList.innerHTML += html;
+                    });
+                }
+            },
+
+            showTransferModal: function() {
+                const modal = document.getElementById('transfer-modal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            },
+
+            showTopUpModal: function() {
+                const modal = document.getElementById('topup-modal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            },
+
+            processTransfer: function(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                const amount = parseFloat(data.amount);
+
+                if(amount > authService.currentUser.balance) {
+                    ui.toast('Error', 'Insufficient funds', 'error');
+                    return;
+                }
+
+                this.updateBalance(amount, 'debit', 'Transfer to ' + data.recipient);
+                
+                // Hide modal
+                document.getElementById('transfer-modal').classList.add('hidden');
+                document.getElementById('transfer-modal').classList.remove('flex');
+                e.target.reset();
+                ui.toast('Success', 'Money sent successfully!', 'success');
+            },
+
+            processTopUp: function(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                const amount = parseFloat(data.amount);
+
+                this.updateBalance(amount, 'credit', 'Wallet Top Up');
+
+                // Hide modal
+                document.getElementById('topup-modal').classList.add('hidden');
+                document.getElementById('topup-modal').classList.remove('flex');
+                e.target.reset();
+                ui.toast('Success', 'Funds added to wallet!', 'success');
+            },
+
+            updateBalance: function(amount, type, desc) {
+                // Simulate DB Update
+                const users = JSON.parse(localStorage.getItem('pagora_users'));
+                const userIndex = users.findIndex(u => u.id === authService.currentUser.id);
+                
+                if(type === 'debit') {
+                    users[userIndex].balance -= amount;
+                } else {
+                    users[userIndex].balance += amount;
+                }
+                
+                users[userIndex].transactions.push({
+                    id: Date.now(),
+                    type: type,
+                    desc: desc,
+                    amount: amount,
+                    date: new Date().toLocaleDateString()
+                });
+
+                // Save
+                localStorage.setItem('pagora_users', JSON.stringify(users));
+                localStorage.setItem('pagora_current_user', JSON.stringify(users[userIndex]));
+                authService.currentUser = users[userIndex];
+
+                // Refresh UI
+                this.loadDashboard();
+            }
+        };
+
+        // --- 4. UI UTILS ---
+        const ui = {
+            toast: function(title, message, type) {
+                const toast = document.getElementById('toast');
+                const titleEl = document.getElementById('toast-title');
+                const msgEl = document.getElementById('toast-message');
+                
+                titleEl.textContent = title;
+                msgEl.textContent = message;
+                
+                // Colors
+                if(type === 'error') {
+                    toast.classList.replace('border-brand-success', 'border-brand-danger');
+                    toast.querySelector('i').classList.replace('fa-check-circle', 'fa-exclamation-circle');
+                    toast.querySelector('i').parentElement.classList.replace('text-brand-success', 'text-brand-danger');
+                } else {
+                     // Reset to success defaults if needed
+                     toast.classList.replace('border-brand-danger', 'border-brand-success');
+                     toast.querySelector('i').classList.replace('fa-exclamation-circle', 'fa-check-circle');
+                     toast.querySelector('i').parentElement.classList.replace('text-brand-danger', 'text-brand-success');
+                }
+
+                // Show
+                toast.classList.remove('translate-x-full');
+                
+                // Hide after 3s
+                setTimeout(() => {
+                    toast.classList.add('translate-x-full');
+                }, 3000);
+            }
+        };
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // App Prototype Logic
+        function setAppScreen(screenId) {
+            document.querySelectorAll('.app-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(`app-${screenId}`).classList.add('active');
+        }
+
+        // --- INIT ---
+        window.onload = function() {
+            authService.init();
+            
+            // If we have a user, go to dashboard, otherwise home
+            if(authService.currentUser) {
+                router.navigate('dashboard');
+            } else {
+                router.navigate('home');
+            }
+        };
+    </script>
+</body>
+</html>
