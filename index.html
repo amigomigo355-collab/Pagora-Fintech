@@ -9,6 +9,9 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -17,6 +20,7 @@
 
     <script>
         tailwind.config = {
+            darkMode: 'class', // Prepared for future dark mode implementation
             theme: {
                 extend: {
                     colors: {
@@ -75,89 +79,107 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Product List */
-        .product-list li {
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: start;
-            gap: 0.5rem;
-            font-size: 0.875rem; 
-            color: #475569; 
-        }
-        .product-list li i {
-            margin-top: 0.25rem;
-            font-size: 0.6rem;
-            color: #2563EB; 
-        }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-600 antialiased overflow-x-hidden flex flex-col min-h-screen">
+        <!-- VIEW: ABOUT -->
+        <div id="view-about" class="page-view hidden animate-fade-in bg-slate-50 min-h-screen pb-20">
+            <!-- Header -->
+            <div class="bg-brand-navy pt-16 pb-24 px-4 rounded-b-[3rem] text-center text-white relative overflow-hidden">
+                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-20"></div>
+                <h1 class="text-4xl md:text-5xl font-heading font-bold mb-4 relative z-10">About Pagora</h1>
+                <p class="text-blue-200 text-lg max-w-2xl mx-auto relative z-10">The digital bridge connecting families across borders.</p>
+            </div>
 
-    <!-- SPA Navigation -->
-    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all duration-300 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-2 cursor-pointer" onclick="router.navigate('home')">
-                    <div class="w-9 h-9 bg-brand-blue rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-lg shadow-blue-500/30">
-                        <i class="fas fa-paper-plane"></i>
-                    </div>
-                    <span class="font-heading font-bold text-2xl text-brand-navy tracking-tight">Pagora</span>
+            <!-- Content -->
+            <div class="max-w-4xl mx-auto px-4 -mt-12 relative z-20 space-y-8">
+                
+                <!-- Main Description -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
+                    <p class="text-lg text-slate-600 leading-relaxed mb-6">
+                        Pagora is the digital bridge that connects diaspora families with Latin America and the Caribbean through instant, secure, and affordable cross-border financial services.
+                    </p>
+                    <p class="text-slate-600 leading-relaxed mb-6">
+                        We combine fast wallet transfers with compliant virtual payment cards, giving recipients real buying power — online, in stores, or at ATMs — even in underbanked regions.
+                    </p>
+                    <p class="text-slate-600 leading-relaxed font-medium">
+                        Pagora replaces slow, expensive remittances with modern, frictionless digital payments that make supporting loved ones effortless.
+                    </p>
                 </div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden lg:flex space-x-8 items-center">
-                    <!-- Public Links -->
-                    <button onclick="router.navigate('home')" class="nav-btn transition" id="nav-home">Home</button>
-                    <button onclick="router.navigate('products')" class="nav-btn transition" id="nav-products">Products</button>
-                    <button onclick="router.navigate('about')" class="nav-btn transition" id="nav-about">About</button>
-                    
-                    <!-- Auth State: Guest -->
-                    <div id="nav-auth-guest" class="flex items-center gap-4">
-                        <button onclick="router.navigate('login')" class="nav-btn transition font-medium" id="nav-login">Login</button>
-                        <button onclick="router.navigate('signup')" class="px-5 py-2.5 bg-brand-blue hover:bg-blue-700 text-white rounded-full font-bold transition shadow-lg shadow-blue-200 transform hover:scale-105">
-                            Create Account
-                        </button>
+                <!-- Mission & Vision Grid -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Mission -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-brand-blue text-2xl mb-4">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-brand-navy mb-3">Our Mission</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            To make sending money home instant, affordable, and truly useful.
+                        </p>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Pagora empowers diaspora communities to support their families in real time and gives recipients modern tools to spend, manage, and access funds safely — no banks, no lines, no cash-only limitations.
+                        </p>
                     </div>
 
-                    <!-- Auth State: Logged In -->
-                    <div id="nav-auth-user" class="hidden flex items-center gap-4">
-                        <button onclick="router.navigate('dashboard')" class="nav-btn transition font-bold text-brand-blue" id="nav-dashboard">Dashboard</button>
-                        <button onclick="router.navigate('profile')" class="nav-btn transition font-medium" id="nav-profile">Profile</button>
-                        <div class="h-6 w-px bg-slate-300"></div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-full bg-brand-navy text-white flex items-center justify-center text-xs font-bold cursor-pointer" onclick="router.navigate('profile')" id="user-avatar">
-                                <!-- Initials -->
-                            </div>
-                            <button onclick="authService.logout()" class="text-sm font-medium text-slate-500 hover:text-red-500 transition">Logout</button>
+                    <!-- Vision -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 text-2xl mb-4">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-brand-navy mb-3">Our Vision</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            We envision a region where every family — regardless of banking access — can fully participate in the digital economy through secure wallets, compliant payment cards, and seamless cross-border connections.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Approach -->
+                <div class="bg-brand-navy text-white p-8 rounded-2xl shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row gap-6 items-start">
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex-shrink-0 flex items-center justify-center text-brand-accent text-2xl backdrop-blur-sm">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-3">Our Approach</h3>
+                            <p class="text-blue-100 text-sm leading-relaxed mb-4">
+                                Pagora partners with licensed Banking-as-a-Service providers for regulatory oversight, fund custody, card issuance, and compliance.
+                            </p>
+                            <p class="text-blue-100 text-sm leading-relaxed">
+                                This ensures top-tier security, full regulatory alignment, and a reliable financial experience — while we focus on what matters most: empowering communities.
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Mobile Menu Button -->
-                <button class="lg:hidden text-slate-600 hover:text-brand-blue text-2xl" onclick="toggleMobileMenu()">
-                    <i class="fas fa-bars"></i>
-                </button>
             </div>
         </div>
         
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-slate-100 p-4 absolute w-full shadow-xl z-40 top-20">
             <div class="flex flex-col space-y-3">
-                <button onclick="router.navigate('home'); toggleMobileMenu()" class="text-left py-2 font-medium">Home</button>
-                <button onclick="router.navigate('products'); toggleMobileMenu()" class="text-left py-2 font-medium">Products</button>
+                <button onclick="router.navigate('home'); toggleMobileMenu()" class="text-left py-2 font-medium" data-i18n="nav_home">Home</button>
+                <button onclick="router.navigate('products'); toggleMobileMenu()" class="text-left py-2 font-medium" data-i18n="nav_products">Products</button>
                 
+                <!-- Mobile Lang Selector -->
+                <div class="py-2">
+                    <select onchange="ui.setLanguage(this.value); toggleMobileMenu()" class="w-full p-2 border border-slate-200 rounded-lg">
+                        <option value="en">🇺🇸 English</option>
+                        <option value="es">🇲🇽 Español</option>
+                        <option value="fr">🇫🇷 Français</option>
+                    </select>
+                </div>
+
                 <!-- Guest Mobile -->
                 <div id="mobile-auth-guest" class="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                    <button onclick="router.navigate('login'); toggleMobileMenu()" class="text-left py-2 font-medium">Login</button>
-                    <button onclick="router.navigate('signup'); toggleMobileMenu()" class="w-full py-3 bg-brand-blue text-white rounded-lg font-bold">Create Account</button>
+                    <button onclick="router.navigate('login'); toggleMobileMenu()" class="text-left py-2 font-medium" data-i18n="nav_login">Login</button>
+                    <button onclick="router.navigate('signup'); toggleMobileMenu()" class="w-full py-3 bg-brand-blue text-white rounded-lg font-bold" data-i18n="nav_signup">Create Account</button>
                 </div>
 
                 <!-- User Mobile -->
                 <div id="mobile-auth-user" class="hidden flex flex-col gap-2 pt-2 border-t border-slate-100">
-                    <button onclick="router.navigate('dashboard'); toggleMobileMenu()" class="text-left py-2 font-bold text-brand-blue">Go to Dashboard</button>
-                    <button onclick="router.navigate('profile'); toggleMobileMenu()" class="text-left py-2 font-medium">Profile & Settings</button>
-                    <button onclick="authService.logout(); toggleMobileMenu()" class="text-left py-2 text-red-500 font-medium">Log Out</button>
+                    <button onclick="router.navigate('dashboard'); toggleMobileMenu()" class="text-left py-2 font-bold text-brand-blue" data-i18n="nav_dashboard">Go to Dashboard</button>
+                    <button onclick="router.navigate('profile'); toggleMobileMenu()" class="text-left py-2 font-medium" data-i18n="nav_profile">Profile & Settings</button>
+                    <button onclick="authService.logout(); toggleMobileMenu()" class="text-left py-2 text-red-500 font-medium" data-i18n="nav_logout">Log Out</button>
                 </div>
             </div>
         </div>
@@ -183,20 +205,20 @@
                     <div class="text-center lg:text-left">
                         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-blue-200 text-sm font-semibold mb-8 backdrop-blur-sm">
                             <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
-                            Live in US, Mexico & Caribbean
+                            Live in US, LATAM & Caribbean
                         </div>
-                        <h1 class="font-heading text-4xl sm:text-6xl font-extrabold mb-6 leading-tight">
+                        <h1 class="font-heading text-4xl sm:text-6xl font-extrabold mb-6 leading-tight" data-i18n="hero_title">
                             Money Without <br>
                             <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-blue-400">Borders.</span>
                         </h1>
-                        <p class="text-lg text-slate-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        <p class="text-lg text-slate-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed" data-i18n="hero_desc">
                             Send cash instantly, spend with a virtual card, and manage multi-currency wallets. The financial super-app for the diaspora.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                            <button onclick="router.navigate('signup')" class="px-8 py-4 bg-brand-blue hover:bg-blue-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-blue-500/20 transition transform hover:-translate-y-1">
+                            <button onclick="router.navigate('signup')" class="px-8 py-4 bg-brand-blue hover:bg-blue-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-blue-500/20 transition transform hover:-translate-y-1" data-i18n="btn_join">
                                 Join / Create Account
                             </button>
-                            <button onclick="router.navigate('products')" class="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-lg backdrop-blur-md transition flex items-center justify-center gap-2">
+                            <button onclick="router.navigate('products')" class="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-lg backdrop-blur-md transition flex items-center justify-center gap-2" data-i18n="btn_explore">
                                 Explore Products
                             </button>
                         </div>
@@ -216,26 +238,75 @@
                         <div class="w-12 h-12 bg-brand-blue rounded-lg flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
                             <i class="fas fa-lock"></i>
                         </div>
-                        <h2 class="text-2xl font-bold text-brand-navy">Welcome Back</h2>
-                        <p class="text-slate-500 text-sm mt-2">Log in to manage your finances.</p>
+                        <h2 class="text-2xl font-bold text-brand-navy" data-i18n="login_title">Welcome Back</h2>
+                        <p class="text-slate-500 text-sm mt-2" data-i18n="login_subtitle">Log in to manage your finances.</p>
                     </div>
                     
                     <form onsubmit="authService.handleLogin(event)" class="space-y-6">
                         <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
+                            <label class="block text-sm font-bold text-slate-700 mb-2" data-i18n="label_email">Email Address</label>
                             <input type="email" name="email" required class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none transition" placeholder="you@example.com">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-sm font-bold text-slate-700" data-i18n="label_password">Password</label>
+                                <button type="button" onclick="router.navigate('forgot-password')" class="text-xs text-brand-blue font-bold hover:underline" data-i18n="link_forgot_pass">Forgot Password?</button>
+                            </div>
                             <input type="password" name="password" required class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none transition" placeholder="••••••••">
                         </div>
-                        <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-slate-800 text-white font-bold rounded-xl transition shadow-lg">
+                        <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-slate-800 text-white font-bold rounded-xl transition shadow-lg" data-i18n="btn_login">
                             Log In
                         </button>
                     </form>
                     <div class="mt-6 text-center text-sm">
-                        <span class="text-slate-500">New to Pagora?</span>
-                        <button onclick="router.navigate('signup')" class="text-brand-blue font-bold hover:underline">Create an account</button>
+                        <span class="text-slate-500" data-i18n="text_new_user">New to Pagora?</span>
+                        <button onclick="router.navigate('signup')" class="text-brand-blue font-bold hover:underline" data-i18n="link_create">Create an account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: FORGOT PASSWORD -->
+        <div id="view-forgot-password" class="page-view hidden animate-fade-in">
+            <div class="min-h-[80vh] flex items-center justify-center py-12 px-4 bg-slate-50">
+                <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+                    <div class="text-center mb-8">
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-500 text-xl font-bold mx-auto mb-4">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-brand-navy" data-i18n="forgot_title">Reset Password</h2>
+                        <p class="text-slate-500 text-sm mt-2" data-i18n="forgot_subtitle">Enter your email to receive a recovery code.</p>
+                    </div>
+
+                    <!-- Step 1: Request Code -->
+                    <form id="form-forgot-request" onsubmit="authService.requestResetCode(event)" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2" data-i18n="label_email">Email Address</label>
+                            <input type="email" name="email" required class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none transition" placeholder="you@example.com">
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-slate-800 text-white font-bold rounded-xl transition shadow-lg" data-i18n="btn_send_code">
+                            Send Code
+                        </button>
+                    </form>
+
+                    <!-- Step 2: Verify & Reset (Hidden by default) -->
+                    <form id="form-forgot-reset" onsubmit="authService.completePasswordReset(event)" class="space-y-6 hidden">
+                        <input type="hidden" name="email" id="reset-email-hidden">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2" data-i18n="label_code">Recovery Code</label>
+                            <input type="text" name="code" required class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none transition text-center tracking-widest text-lg font-mono" placeholder="123456">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2" data-i18n="label_new_pass">New Password</label>
+                            <input type="password" name="newPassword" required minlength="6" class="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none transition" placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-brand-blue hover:bg-blue-600 text-white font-bold rounded-xl transition shadow-lg" data-i18n="btn_reset_pass">
+                            Update Password
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center text-sm">
+                        <button onclick="router.navigate('login')" class="text-slate-500 hover:text-brand-navy font-bold hover:underline" data-i18n="link_back_login">Back to Login</button>
                     </div>
                 </div>
             </div>
@@ -249,49 +320,58 @@
                         <div class="w-12 h-12 bg-brand-success rounded-lg flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
                             <i class="fas fa-user-plus"></i>
                         </div>
-                        <h2 class="text-2xl font-bold text-brand-navy">Create Account</h2>
-                        <p class="text-slate-500 text-sm mt-2">Join the future of banking today.</p>
+                        <h2 class="text-2xl font-bold text-brand-navy" data-i18n="signup_title">Create Account</h2>
+                        <p class="text-slate-500 text-sm mt-2" data-i18n="signup_subtitle">Join the future of banking today.</p>
                     </div>
                     
                     <form onsubmit="authService.handleSignup(event)" class="space-y-5">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">First Name</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="label_firstname">First Name</label>
                                 <input type="text" name="firstName" required class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Last Name</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="label_lastname">Last Name</label>
                                 <input type="text" name="lastName" required class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="label_email">Email</label>
                             <input type="email" name="email" required class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Password</label>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="label_password">Password</label>
                             <input type="password" name="password" required minlength="6" class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-brand-blue">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Country</label>
-                            <select name="country" class="w-full p-3 border border-slate-200 rounded-xl outline-none bg-white">
-                                <option value="US">United States</option>
-                                <option value="MX">Mexico</option>
-                                <option value="BR">Brazil</option>
-                                <option value="CO">Colombia</option>
-                                <option value="UY">Uruguay</option>
-                                <option value="CL">Chile</option>
-                                <option value="HT">Haiti</option>
-                                <option value="DO">Dominican Republic</option>
-                            </select>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1" data-i18n="label_country">Country</label>
+                                <select name="country" class="w-full p-3 border border-slate-200 rounded-xl outline-none bg-white">
+                                    <option value="US">United States</option>
+                                    <option value="MX">Mexico</option>
+                                    <option value="BR">Brazil</option>
+                                    <option value="CO">Colombia</option>
+                                    <option value="UY">Uruguay</option>
+                                    <option value="CL">Chile</option>
+                                    <option value="HT">Haiti</option>
+                                    <option value="DO">Dominican Republic</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Account Type</label>
+                                <select name="accountType" class="w-full p-3 border border-slate-200 rounded-xl outline-none bg-white">
+                                    <option value="diaspora">Diaspora (Sender)</option>
+                                    <option value="beneficiary">Beneficiary (Receiver)</option>
+                                </select>
+                            </div>
                         </div>
-                        <button type="submit" class="w-full py-3 bg-brand-blue hover:bg-blue-600 text-white font-bold rounded-xl transition shadow-lg">
+                        <button type="submit" class="w-full py-3 bg-brand-blue hover:bg-blue-600 text-white font-bold rounded-xl transition shadow-lg" data-i18n="btn_create">
                             Create Account
                         </button>
                     </form>
                     <div class="mt-6 text-center text-sm">
-                        <span class="text-slate-500">Already have an account?</span>
-                        <button onclick="router.navigate('login')" class="text-brand-blue font-bold hover:underline">Log in</button>
+                        <span class="text-slate-500" data-i18n="text_existing_user">Already have an account?</span>
+                        <button onclick="router.navigate('login')" class="text-brand-blue font-bold hover:underline" data-i18n="link_login">Log in</button>
                     </div>
                 </div>
             </div>
@@ -306,6 +386,9 @@
                         <div>
                             <p class="text-blue-200 text-sm font-medium">Welcome back,</p>
                             <h2 class="text-2xl font-bold" id="dash-username">User</h2>
+                            <div id="dash-type-badge" class="inline-block mt-2 px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wide bg-white/20 text-white">
+                                Standard Account
+                            </div>
                         </div>
                         <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/20 transition" onclick="router.navigate('profile')">
                             <i class="fas fa-user"></i>
@@ -318,57 +401,47 @@
                         <div class="relative z-10">
                             <div class="flex justify-between items-start mb-2">
                                 <span class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Balance</span>
-                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Active</span>
+                                <!-- Currency Toggle -->
+                                <div class="flex gap-2 text-[10px] font-bold">
+                                    <button onclick="bankService.toggleCurrency('USD')" class="bg-white/50 px-2 py-1 rounded hover:bg-white transition currency-btn">USD</button>
+                                    <button onclick="bankService.toggleCurrency('MXN')" class="bg-white/20 px-2 py-1 rounded hover:bg-white transition currency-btn">MXN</button>
+                                    <button onclick="bankService.toggleCurrency('HTG')" class="bg-white/20 px-2 py-1 rounded hover:bg-white transition currency-btn">HTG</button>
+                                </div>
                             </div>
                             <div class="text-4xl font-bold text-brand-navy mb-1" id="dash-balance">$0.00</div>
                             <div class="text-slate-400 text-sm font-mono" id="dash-account-num">Acct: ...</div>
                         </div>
                         
-                        <div class="mt-8 grid grid-cols-2 gap-4">
-                            <button onclick="bankService.showTransferModal()" class="flex items-center justify-center gap-2 bg-brand-blue text-white py-3 rounded-xl font-bold hover:bg-blue-600 transition shadow-lg shadow-blue-200">
-                                <i class="fas fa-paper-plane"></i> Send
+                        <div class="mt-8 grid grid-cols-3 gap-3">
+                            <button onclick="bankService.showTransferModal()" class="flex flex-col items-center justify-center gap-1 bg-brand-blue text-white py-2 rounded-xl font-bold hover:bg-blue-600 transition shadow-lg text-xs">
+                                <i class="fas fa-paper-plane text-lg"></i> Send
                             </button>
-                            <button onclick="bankService.showTopUpModal()" class="flex items-center justify-center gap-2 bg-white border border-slate-200 text-brand-navy py-3 rounded-xl font-bold hover:bg-slate-50 transition">
-                                <i class="fas fa-plus"></i> Top Up
+                            <button class="flex flex-col items-center justify-center gap-1 bg-brand-navy text-white py-2 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg text-xs">
+                                <i class="fas fa-hand-holding-usd text-lg"></i> Request
+                            </button>
+                            <button onclick="bankService.showTopUpModal()" class="flex flex-col items-center justify-center gap-1 bg-white border border-slate-200 text-brand-navy py-2 rounded-xl font-bold hover:bg-slate-50 transition text-xs">
+                                <i class="fas fa-plus text-lg"></i> Top Up
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Dashboard Content -->
-            <div class="max-w-5xl mx-auto px-4 -mt-16 relative z-20">
-                <div class="grid md:grid-cols-3 gap-6">
-                    <!-- Quick Stats -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl">
-                            <i class="fas fa-credit-card"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold uppercase">Cards</p>
-                            <p class="font-bold text-brand-navy">1 Active</p>
-                        </div>
+            <!-- DYNAMIC Dashboard Content (Inserted via JS) -->
+            <div id="dash-dynamic-content" class="max-w-5xl mx-auto px-4 -mt-10 relative z-20 mb-8">
+                <!-- Content injected by bankService based on account type -->
+            </div>
+
+            <!-- Standard Transaction History -->
+            <div class="max-w-5xl mx-auto px-4 relative z-20">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="font-bold text-lg text-brand-navy">Recent Transactions</h3>
+                        <button class="text-sm text-brand-blue font-bold hover:underline">View All</button>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
-                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xl">
-                            <i class="fas fa-exchange-alt"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold uppercase">Monthly Limit</p>
-                            <p class="font-bold text-brand-navy">$5,000 Left</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Transactions -->
-                    <div class="md:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                            <h3 class="font-bold text-lg text-brand-navy">Recent Transactions</h3>
-                            <button class="text-sm text-brand-blue font-bold hover:underline">View All</button>
-                        </div>
-                        <div id="dash-transactions" class="divide-y divide-slate-50">
-                            <!-- Transactions injected by JS -->
-                            <div class="p-8 text-center text-slate-400 text-sm">No transactions yet.</div>
-                        </div>
+                    <div id="dash-transactions" class="divide-y divide-slate-50">
+                        <!-- Transactions injected by JS -->
+                        <div class="p-8 text-center text-slate-400 text-sm">No transactions yet.</div>
                     </div>
                 </div>
             </div>
@@ -405,29 +478,27 @@
                     </div>
                 </div>
 
-                <!-- Limits -->
+                <!-- KYC / Verification -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
                     <div class="p-6 border-b border-slate-100">
-                        <h3 class="font-bold text-lg text-brand-navy">Account Limits</h3>
+                        <h3 class="font-bold text-lg text-brand-navy flex items-center gap-2">
+                            <i class="fas fa-id-card text-brand-blue"></i> Identity Verification (KYC)
+                        </h3>
                     </div>
-                    <div class="p-6 space-y-6">
-                        <div>
-                            <div class="flex justify-between text-sm mb-2">
-                                <span class="text-slate-600">Daily Transfer Limit</span>
-                                <span class="font-bold text-brand-navy">$2,000.00</span>
-                            </div>
-                            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-brand-blue w-1/4 rounded-full"></div>
-                            </div>
+                    <div class="p-6">
+                        <div class="bg-blue-50 p-4 rounded-xl mb-4 text-sm text-blue-800">
+                            To increase your limits, please upload a valid Government ID.
                         </div>
-                        <div>
-                            <div class="flex justify-between text-sm mb-2">
-                                <span class="text-slate-600">Monthly Top-up Limit</span>
-                                <span class="font-bold text-brand-navy">$10,000.00</span>
-                            </div>
-                            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-green-500 w-1/2 rounded-full"></div>
-                            </div>
+                        <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('kyc-input').click()">
+                            <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-2"></i>
+                            <p class="font-bold text-slate-600">Click to upload ID</p>
+                            <p class="text-xs text-slate-400">JPG, PNG or PDF</p>
+                            <input type="file" id="kyc-input" class="hidden" onchange="ui.handleKYCUpload(this)">
+                        </div>
+                        <div id="kyc-status" class="mt-4 text-center hidden">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">
+                                <i class="fas fa-clock"></i> Verification Pending
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -450,7 +521,7 @@
             </div>
         </div>
 
-        <!-- VIEW: PRODUCTS (from previous update) -->
+        <!-- VIEW: PRODUCTS -->
         <div id="view-products" class="page-view hidden animate-fade-in">
              <section class="py-20 bg-slate-50">
                 <div class="max-w-7xl mx-auto px-4">
@@ -641,6 +712,10 @@
                 <span class="font-bold text-white text-xl block mb-2">Pagora LLC</span>
                 <p class="text-sm">Sheridan, Wyoming, USA</p>
             </div>
+            <div class="flex gap-4 text-xs">
+                <a href="#" onclick="ui.showModal('legal')" class="hover:text-white transition">Terms</a>
+                <a href="#" onclick="ui.showModal('legal')" class="hover:text-white transition">Privacy</a>
+            </div>
             <div class="text-sm">© 2025 Pagora. Financial Simulation Prototype.</div>
         </div>
     </footer>
@@ -690,8 +765,133 @@
         </div>
     </div>
 
+    <!-- MODAL: LEGAL -->
+    <div id="legal-modal" class="fixed inset-0 z-[60] hidden bg-brand-navy/80 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-8 shadow-2xl animate-fade-in max-h-[80vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold text-brand-navy mb-4">Terms & Privacy</h3>
+            <p class="text-slate-600 mb-4">This is a simulated legal agreement for the Pagora prototype.</p>
+            <p class="text-slate-600 mb-6">In a production environment, this would contain the full Terms of Service, Privacy Policy, and Data Protection details compliant with US, Mexican, and Caribbean financial regulations.</p>
+            <button onclick="document.getElementById('legal-modal').classList.add('hidden')" class="w-full py-3 bg-brand-blue text-white font-bold rounded-xl hover:bg-blue-600">Close</button>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT: LOGIC & BACKEND SIMULATION -->
     <script>
+        // --- TRANSLATIONS CONFIGURATION ---
+        const translations = {
+            en: {
+                nav_home: "Home",
+                nav_products: "Products",
+                nav_about: "About",
+                nav_login: "Login",
+                nav_signup: "Create Account",
+                nav_dashboard: "Dashboard",
+                nav_profile: "Profile",
+                nav_logout: "Logout",
+                hero_title: "Money Without <br><span class=\"text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-blue-400\">Borders.</span>",
+                hero_desc: "Instant transfers, virtual cards, and seamless money management for the US, LATAM, and Caribbean. The financial super-app for the diaspora.",
+                btn_join: "Join / Create Account",
+                btn_explore: "Explore Products",
+                login_title: "Welcome Back",
+                login_subtitle: "Log in to manage your finances.",
+                label_email: "Email Address",
+                label_password: "Password",
+                btn_login: "Log In",
+                text_new_user: "New to Pagora?",
+                link_create: "Create an account",
+                signup_title: "Create Account",
+                signup_subtitle: "Join the future of banking today.",
+                label_firstname: "First Name",
+                label_lastname: "Last Name",
+                label_country: "Country",
+                btn_create: "Create Account",
+                text_existing_user: "Already have an account?",
+                link_login: "Log in",
+                link_forgot_pass: "Forgot Password?",
+                forgot_title: "Reset Password",
+                forgot_subtitle: "Enter your email to receive a recovery code.",
+                btn_send_code: "Send Code",
+                label_code: "Recovery Code",
+                label_new_pass: "New Password",
+                btn_reset_pass: "Update Password",
+                link_back_login: "Back to Login"
+            },
+            es: {
+                nav_home: "Inicio",
+                nav_products: "Productos",
+                nav_about: "Nosotros",
+                nav_login: "Entrar",
+                nav_signup: "Crear Cuenta",
+                nav_dashboard: "Panel",
+                nav_profile: "Perfil",
+                nav_logout: "Salir",
+                hero_title: "Dinero Sin <br><span class=\"text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-blue-400\">Fronteras.</span>",
+                hero_desc: "Transferencias instantáneas, tarjetas virtuales y gestión de dinero sin problemas para EE. UU., México y el Caribe. La súper app financiera para la diáspora.",
+                btn_join: "Únete / Crea Cuenta",
+                btn_explore: "Explorar Productos",
+                login_title: "Bienvenido de nuevo",
+                login_subtitle: "Inicia sesión para administrar tus finanzas.",
+                label_email: "Correo Electrónico",
+                label_password: "Contraseña",
+                btn_login: "Iniciar Sesión",
+                text_new_user: "¿Nuevo en Pagora?",
+                link_create: "Crear una cuenta",
+                signup_title: "Crear Cuenta",
+                signup_subtitle: "Únete al futuro de la banca hoy.",
+                label_firstname: "Nombre",
+                label_lastname: "Apellido",
+                label_country: "País",
+                btn_create: "Crear Cuenta",
+                text_existing_user: "¿Ya tienes cuenta?",
+                link_login: "Iniciar sesión",
+                link_forgot_pass: "¿Olvidaste tu contraseña?",
+                forgot_title: "Restablecer Contraseña",
+                forgot_subtitle: "Ingresa tu correo para recibir un código.",
+                btn_send_code: "Enviar Código",
+                label_code: "Código de Recuperación",
+                label_new_pass: "Nueva Contraseña",
+                btn_reset_pass: "Actualizar Contraseña",
+                link_back_login: "Volver a Iniciar Sesión"
+            },
+            fr: {
+                nav_home: "Accueil",
+                nav_products: "Produits",
+                nav_about: "À Propos",
+                nav_login: "Connexion",
+                nav_signup: "Créer un Compte",
+                nav_dashboard: "Tableau de Bord",
+                nav_profile: "Profil",
+                nav_logout: "Déconnexion",
+                hero_title: "L'argent Sans <br><span class=\"text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-blue-400\">Frontières.</span>",
+                hero_desc: "Transferts instantanés, cartes virtuelles et gestion financière fluide pour les États-Unis, le Mexique et les Caraïbes. La super-app financière pour la diaspora.",
+                btn_join: "Rejoindre / Créer un Compte",
+                btn_explore: "Explorer les Produits",
+                login_title: "Bon retour",
+                login_subtitle: "Connectez-vous pour gérer vos finances.",
+                label_email: "Adresse Email",
+                label_password: "Mot de passe",
+                btn_login: "Se Connecter",
+                text_new_user: "Nouveau sur Pagora ?",
+                link_create: "Créer un compte",
+                signup_title: "Créer un Compte",
+                signup_subtitle: "Rejoignez l'avenir de la banque aujourd'hui.",
+                label_firstname: "Prénom",
+                label_lastname: "Nom",
+                label_country: "Pays",
+                btn_create: "Créer un Compte",
+                text_existing_user: "Vous avez déjà un compte ?",
+                link_login: "Se connecter",
+                link_forgot_pass: "Mot de passe oublié ?",
+                forgot_title: "Réinitialiser le mot de passe",
+                forgot_subtitle: "Entrez votre email pour recevoir un code.",
+                btn_send_code: "Envoyer le Code",
+                label_code: "Code de Récupération",
+                label_new_pass: "Nouveau Mot de Passe",
+                btn_reset_pass: "Mettre à jour",
+                link_back_login: "Retour à la connexion"
+            }
+        };
+
         // --- 1. ROUTER & NAVIGATION ---
         const router = {
             currentPage: 'home',
@@ -796,6 +996,48 @@
                 }
             },
 
+            requestResetCode: function(e) {
+                e.preventDefault();
+                const email = e.target.email.value;
+                const users = JSON.parse(localStorage.getItem('pagora_users') || '[]');
+                const user = users.find(u => u.email === email);
+
+                if (user) {
+                    ui.toast('Info', 'Recovery Code Sent: 123456', 'success');
+                    document.getElementById('form-forgot-request').classList.add('hidden');
+                    document.getElementById('form-forgot-reset').classList.remove('hidden');
+                    document.getElementById('reset-email-hidden').value = email;
+                } else {
+                    ui.toast('Error', 'Email not found', 'error');
+                }
+            },
+
+            completePasswordReset: function(e) {
+                e.preventDefault();
+                const email = e.target.email.value;
+                const code = e.target.code.value;
+                const newPass = e.target.newPassword.value;
+
+                if (code !== '123456') {
+                    ui.toast('Error', 'Invalid Recovery Code', 'error');
+                    return;
+                }
+
+                const users = JSON.parse(localStorage.getItem('pagora_users') || '[]');
+                const userIndex = users.findIndex(u => u.email === email);
+
+                if (userIndex > -1) {
+                    users[userIndex].password = newPass;
+                    localStorage.setItem('pagora_users', JSON.stringify(users));
+                    ui.toast('Success', 'Password updated! Please login.', 'success');
+                    e.target.reset();
+                    document.getElementById('form-forgot-request').reset();
+                    document.getElementById('form-forgot-request').classList.remove('hidden');
+                    document.getElementById('form-forgot-reset').classList.add('hidden');
+                    router.navigate('login');
+                }
+            },
+
             loginUser: function(user) {
                 this.currentUser = user;
                 localStorage.setItem('pagora_current_user', JSON.stringify(user));
@@ -820,7 +1062,6 @@
 
             changePassword: function(e) {
                 e.preventDefault();
-                // Simulation only
                 ui.toast('Success', 'Password updated successfully!', 'success');
                 e.target.reset();
             }
@@ -828,25 +1069,131 @@
 
         // --- 3. BANK SERVICE (Simulated Financials) ---
         const bankService = {
+            currentCurrency: 'USD',
+            rates: { 'USD': 1, 'MXN': 17.5, 'HTG': 132.0 },
+
             loadDashboard: function() {
                 const user = authService.currentUser;
                 if(!user) return;
 
-                // Refresh data from storage (in case updated elsewhere)
+                // Refresh data from storage
                 const users = JSON.parse(localStorage.getItem('pagora_users') || '[]');
                 const freshUser = users.find(u => u.id === user.id);
                 if(freshUser) authService.currentUser = freshUser;
 
-                // Update DOM
+                // Update DOM Header
                 document.getElementById('dash-username').textContent = user.firstName + ' ' + user.lastName;
-                document.getElementById('dash-balance').textContent = '$' + parseFloat(user.balance).toLocaleString('en-US', {minimumFractionDigits: 2});
+                
+                // Balance with Currency Conversion
+                const rate = this.rates[this.currentCurrency];
+                const convertedBalance = (user.balance * rate).toLocaleString('en-US', {
+                    style: 'currency', 
+                    currency: this.currentCurrency
+                });
+                document.getElementById('dash-balance').textContent = convertedBalance;
+                
                 document.getElementById('dash-account-num').textContent = user.accountNumber;
+                
+                // Account Type Badge
+                const typeLabel = user.accountType === 'diaspora' ? 'Diaspora (Sender)' : 'Beneficiary (Receiver)';
+                document.getElementById('dash-type-badge').textContent = typeLabel;
+
+                // Highlight Active Currency Button
+                document.querySelectorAll('.currency-btn').forEach(btn => {
+                    if(btn.textContent === this.currentCurrency) {
+                        btn.classList.remove('bg-white/20');
+                        btn.classList.add('bg-white/50');
+                    } else {
+                        btn.classList.add('bg-white/20');
+                        btn.classList.remove('bg-white/50');
+                    }
+                });
+
+                // --- DYNAMIC CONTENT LOGIC ---
+                const container = document.getElementById('dash-dynamic-content');
+                container.innerHTML = ''; 
+
+                if(user.accountType === 'diaspora') {
+                    // DIASPORA VIEW
+                    container.innerHTML = `
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                                <h3 class="font-bold text-lg text-brand-navy mb-4 flex items-center gap-2">
+                                    <i class="fas fa-users text-brand-blue"></i> My Beneficiaries
+                                </h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">M</div>
+                                            <div>
+                                                <p class="font-bold text-sm">Maria (Mom)</p>
+                                                <p class="text-xs text-slate-500">Mexico City</p>
+                                            </div>
+                                        </div>
+                                        <button class="text-xs bg-white border border-slate-200 px-3 py-1 rounded-full font-bold hover:bg-slate-100">View Activity</button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">J</div>
+                                            <div>
+                                                <p class="font-bold text-sm">Juan (Brother)</p>
+                                                <p class="text-xs text-slate-500">Guadalajara</p>
+                                            </div>
+                                        </div>
+                                        <button class="text-xs bg-white border border-slate-200 px-3 py-1 rounded-full font-bold hover:bg-slate-100">View Activity</button>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-4 py-2 border-2 border-dashed border-slate-200 text-slate-400 font-bold rounded-xl hover:border-brand-blue hover:text-brand-blue transition">
+                                    + Add New Beneficiary
+                                </button>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                                <h3 class="font-bold text-lg text-brand-navy mb-4 flex items-center gap-2">
+                                    <i class="fas fa-chart-pie text-brand-blue"></i> Spending Tracker
+                                </h3>
+                                <canvas id="spendingChart" height="150"></canvas>
+                            </div>
+                        </div>
+                    `;
+                    // Init Chart
+                    this.initChart();
+                } else {
+                    // BENEFICIARY VIEW
+                    container.innerHTML = `
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition flex flex-col items-center gap-3 group">
+                                <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl group-hover:scale-110 transition">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <span class="font-bold text-sm text-slate-700">Withdraw ATM</span>
+                            </button>
+                            <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition flex flex-col items-center gap-3 group">
+                                <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl group-hover:scale-110 transition">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <span class="font-bold text-sm text-slate-700">Virtual Card</span>
+                            </button>
+                            <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition flex flex-col items-center gap-3 group">
+                                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl group-hover:scale-110 transition">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <span class="font-bold text-sm text-slate-700">Top Up Phone</span>
+                            </button>
+                            <button class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition flex flex-col items-center gap-3 group">
+                                <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xl group-hover:scale-110 transition">
+                                    <i class="fas fa-qrcode"></i>
+                                </div>
+                                <span class="font-bold text-sm text-slate-700">Pay Merchant</span>
+                            </button>
+                        </div>
+                    `;
+                }
 
                 // Render Transactions
                 const txList = document.getElementById('dash-transactions');
                 txList.innerHTML = '';
-                
-                const sortedTx = [...user.transactions].reverse(); // Newest first
+                const sortedTx = [...user.transactions].reverse(); 
 
                 if(sortedTx.length === 0) {
                      txList.innerHTML = '<div class="p-8 text-center text-slate-400 text-sm">No transactions yet.</div>';
@@ -857,6 +1204,9 @@
                         const sign = isCredit ? '+' : '-';
                         const icon = isCredit ? 'fa-arrow-down' : 'fa-paper-plane';
                         const bg = isCredit ? 'bg-green-100 text-green-600' : 'bg-blue-50 text-brand-blue';
+                        
+                        // Convert tx amount
+                        const displayAmount = (tx.amount * rate).toLocaleString('en-US', {style:'currency', currency: this.currentCurrency});
 
                         const html = `
                             <div class="p-6 flex justify-between items-center hover:bg-slate-50 transition">
@@ -869,7 +1219,7 @@
                                         <p class="text-xs text-slate-500">${tx.date}</p>
                                     </div>
                                 </div>
-                                <div class="font-bold ${color}">${sign}$${tx.amount.toFixed(2)}</div>
+                                <div class="font-bold ${color}">${sign}${displayAmount}</div>
                             </div>
                         `;
                         txList.innerHTML += html;
@@ -877,16 +1227,43 @@
                 }
             },
 
+            initChart: function() {
+                const ctx = document.getElementById('spendingChart');
+                if(!ctx) return;
+                
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Groceries', 'Education', 'Utilities', 'Cash'],
+                        datasets: [{
+                            data: [35, 25, 20, 20],
+                            backgroundColor: ['#2563EB', '#10B981', '#F59E0B', '#8B5CF6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right' }
+                        }
+                    }
+                });
+            },
+
+            toggleCurrency: function(curr) {
+                this.currentCurrency = curr;
+                this.loadDashboard();
+            },
+
             showTransferModal: function() {
-                const modal = document.getElementById('transfer-modal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+                document.getElementById('transfer-modal').classList.remove('hidden');
+                document.getElementById('transfer-modal').classList.add('flex');
             },
 
             showTopUpModal: function() {
-                const modal = document.getElementById('topup-modal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+                document.getElementById('topup-modal').classList.remove('hidden');
+                document.getElementById('topup-modal').classList.add('flex');
             },
 
             processTransfer: function(e) {
@@ -902,7 +1279,6 @@
 
                 this.updateBalance(amount, 'debit', 'Transfer to ' + data.recipient);
                 
-                // Hide modal
                 document.getElementById('transfer-modal').classList.add('hidden');
                 document.getElementById('transfer-modal').classList.remove('flex');
                 e.target.reset();
@@ -917,7 +1293,6 @@
 
                 this.updateBalance(amount, 'credit', 'Wallet Top Up');
 
-                // Hide modal
                 document.getElementById('topup-modal').classList.add('hidden');
                 document.getElementById('topup-modal').classList.remove('flex');
                 e.target.reset();
@@ -925,7 +1300,6 @@
             },
 
             updateBalance: function(amount, type, desc) {
-                // Simulate DB Update
                 const users = JSON.parse(localStorage.getItem('pagora_users'));
                 const userIndex = users.findIndex(u => u.id === authService.currentUser.id);
                 
@@ -943,12 +1317,10 @@
                     date: new Date().toLocaleDateString()
                 });
 
-                // Save
                 localStorage.setItem('pagora_users', JSON.stringify(users));
                 localStorage.setItem('pagora_current_user', JSON.stringify(users[userIndex]));
                 authService.currentUser = users[userIndex];
 
-                // Refresh UI
                 this.loadDashboard();
             }
         };
@@ -963,25 +1335,48 @@
                 titleEl.textContent = title;
                 msgEl.textContent = message;
                 
-                // Colors
                 if(type === 'error') {
                     toast.classList.replace('border-brand-success', 'border-brand-danger');
                     toast.querySelector('i').classList.replace('fa-check-circle', 'fa-exclamation-circle');
                     toast.querySelector('i').parentElement.classList.replace('text-brand-success', 'text-brand-danger');
                 } else {
-                     // Reset to success defaults if needed
                      toast.classList.replace('border-brand-danger', 'border-brand-success');
                      toast.querySelector('i').classList.replace('fa-exclamation-circle', 'fa-check-circle');
                      toast.querySelector('i').parentElement.classList.replace('text-brand-danger', 'text-brand-success');
                 }
 
-                // Show
                 toast.classList.remove('translate-x-full');
-                
-                // Hide after 3s
-                setTimeout(() => {
-                    toast.classList.add('translate-x-full');
-                }, 3000);
+                setTimeout(() => { toast.classList.add('translate-x-full'); }, 3000);
+            },
+
+            setLanguage: function(lang) {
+                const t = translations[lang];
+                if(!t) return;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if(t[key]) {
+                        if(key === 'hero_title') el.innerHTML = t[key];
+                        else el.textContent = t[key];
+                    }
+                });
+                localStorage.setItem('pagora_lang', lang);
+                document.querySelectorAll('select').forEach(sel => {
+                    if(sel.options[0].value === 'en') sel.value = lang;
+                });
+            },
+
+            showModal: function(modalId) {
+                document.getElementById(modalId + '-modal').classList.remove('hidden');
+                document.getElementById(modalId + '-modal').classList.add('flex');
+            },
+
+            handleKYCUpload: function(input) {
+                if(input.files && input.files[0]) {
+                    // Simulate upload
+                    const statusEl = document.getElementById('kyc-status');
+                    statusEl.classList.remove('hidden');
+                    this.toast('Success', 'Document uploaded securely.', 'success');
+                }
             }
         };
 
@@ -1001,13 +1396,37 @@
         window.onload = function() {
             authService.init();
             
-            // If we have a user, go to dashboard, otherwise home
+            const savedLang = localStorage.getItem('pagora_lang') || 'en';
+            ui.setLanguage(savedLang);
+            document.getElementById('lang-selector').value = savedLang;
+            
             if(authService.currentUser) {
                 router.navigate('dashboard');
             } else {
                 router.navigate('home');
             }
         };
+
+        // ==========================================
+        //  FUTURE ROADMAP (TO DO LIST)
+        // ==========================================
+        /**
+         * 1. REAL BACKEND INTEGRATION:
+         * - Replace localStorage with Firebase Firestore or AWS DynamoDB.
+         * - Implement JWT (JSON Web Tokens) for secure session management.
+         * - Add Server-side validation for all transactions.
+         * * 2. PROGRESSIVE WEB APP (PWA):
+         * - Create a manifest.json file for "Add to Home Screen" functionality.
+         * - Register a Service Worker for offline capabilities.
+         * * 3. LIVE SUPPORT:
+         * - Integrate Tawk.to, Intercom, or WhatsApp Business API script in the footer.
+         * * 4. FULL DARK MODE:
+         * - Add a toggle switch in the Profile page.
+         * - Apply 'dark:' tailwind classes to all text/bg elements (e.g., dark:bg-slate-900).
+         * * 5. SECURITY:
+         * - Add 2FA (Two-Factor Authentication) step during login.
+         * - Implement idle timeout (auto-logout after 15 mins).
+         */
     </script>
 </body>
 </html>
